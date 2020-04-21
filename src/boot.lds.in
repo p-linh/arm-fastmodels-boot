@@ -1,0 +1,100 @@
+/*
+ * Arm FastModels Hello World Boot Example
+ *
+ * Linker Script Template
+ * File: boot.lds.in
+ *
+ * Copyright 2020 Reto Achermann
+ * SPDX-License-Identifier: GPL-3.0
+ */
+
+OUTPUT_FORMAT("elf64-littleaarch64")
+OUTPUT_ARCH("aarch64")
+
+ENTRY(boot_entry_bsp)
+
+PHDRS {
+    load PT_LOAD ;
+    dynamic PT_DYNAMIC ;
+    note PT_NOTE ;
+}
+
+SECTIONS {
+    . = 0x0;
+    . = ALIGN(4k);
+    __bootloader_first_byte = .;
+
+    __bootloader_text_first_byte = .;
+    bootseq : {
+        *(.bootseq)
+    } :load
+
+    .text : {
+        *(.text);
+        *(.text.unlikely);
+    }  :load
+    __bootloader_text_last_byte = .;
+
+
+    . = ALIGN(4k);
+    __bootloader_data_first_byte = .;
+    .rodata . :
+    {
+        *(.rodata);
+        *(.rodata.*);
+    }
+
+    .data . :
+    {
+        *(.data);
+        *(.data.*);
+    }
+
+    .bss . :
+    {
+        *(.bss);
+    }
+
+    __bootloader_data_last_byte = .;
+    __bootloader_got_first_byte = .;
+    .got . :
+    {
+        got_base = .;
+        *(.got);
+        *(.got.plt);
+    }
+    __bootloader_got_last_byte = .;
+
+    .rela.dyn . :
+    {
+        *(.rela.dyn);
+    }
+
+    .dynamic . :
+    {
+        *(.dynamic);
+    } :load :dynamic
+
+    .dynsym . :
+    {
+        *(.dynsym);
+    }
+
+    .dynstr . :
+    {
+        *(.dynstr);
+    }
+
+    .note.gnu.build-id . :
+    {
+        *(.note.gnu.build-id);
+    }
+
+    /DISCARD/ :
+    {
+        *(.eh_frame);
+        *(.eh_frame_hdr);
+        *(.hash);
+        *(.interp);
+    }
+}

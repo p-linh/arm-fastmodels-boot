@@ -1,2 +1,13 @@
-# arm-fastmodels-boot
-A simple, helloworld boot application for the Arm FastModels simulator. 
+# Arm FastModels Hello World Boot
+A simple, helloworld boot application for the Arm FastModels simulator.
+
+## Authors
+
+Reto Achermann
+
+
+# License
+
+See LICENSE file.
+
+#
