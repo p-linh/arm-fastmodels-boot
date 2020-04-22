@@ -13,7 +13,9 @@
 #define CONFIG_BSP_MIPD 0
 
 
-#define CONFIG_SERIAL_BASE 0x1234;
+#define CONFIG_SERIAL_CONSOLE_BASE 0x1C090000
+
+#define CONFIG_SERIAL_DEBUG_BASE 0x1C090000
 
 
 ///< this is the serial console port

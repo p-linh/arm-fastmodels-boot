@@ -37,10 +37,10 @@ struct bootloader_args {
 STATIC_ASSERT(sizeof(struct bootloader_args) == BOOTLOADER_ARGS_SIZE);
 
 
-#define BOOTLOADER_ARGS_INIT(_mpid)                                                               \
+#define BOOTLOADER_ARGS_INIT(_mpid, _serial)                                                      \
     (struct bootloader_args)                                                                      \
     {                                                                                             \
-        .magic = 0, .mpid = _mpid                                                                 \
+        .magic = 0, .mpid = _mpid, .serial = { _serial, _serial }                                 \
     }
 
 #endif /* __BOOTLOADER_ARGS_H_ */
