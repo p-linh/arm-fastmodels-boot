@@ -4,7 +4,7 @@ TOP_LEVEL_COMPONENT = "ARMv8_Minimal";
 ACTIVE_CONFIG_LINUX  = "default";
 config "default"
     {
-        ADDITIONAL_COMPILER_SETTINGS = "-march=corei7 -O3 -Wall -std=c++11 -Wno-deprecated -Wno-unused-function";
+        ADDITIONAL_COMPILER_SETTINGS = "-march=corei7 -O2 -std=c++11 -Wno-deprecated -Wno-unused-function";
         ADDITIONAL_LINKER_SETTINGS = "-Wl,--no-undefined";
         BUILD_DIR = "./Linux64-Release-GCC-6.4";
         COMPILER = "gcc-6.4";
