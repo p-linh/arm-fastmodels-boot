@@ -11,7 +11,8 @@
 OUTPUT_FORMAT("elf64-littleaarch64")
 OUTPUT_ARCH("aarch64")
 
-ENTRY(boot_entry_bsp)
+/* this is the entry symbol, in entry.S */
+ENTRY(boot_entry)
 
 PHDRS {
     load PT_LOAD ;
