@@ -15,5 +15,6 @@ typedef unsigned long uintptr_t;
 
 typedef uintptr_t lpaddr_t;
 typedef uintptr_t lvaddr_t;
+typedef uintptr_t genaddr_t;
 
 #endif /* __TYPES_H_ */
