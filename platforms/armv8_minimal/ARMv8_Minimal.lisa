@@ -1,0 +1,34 @@
+component ARMv8_Minimal_Dual
+{
+
+    composition
+    {
+        telnetterminal : TelnetTerminal("start_telnet"=0);
+        pl011_uart : PL011_Uart("out_file"="-");
+
+        Memory0 : RAMDevice();
+        armcortexa57x1ct : ARMCortexA53x1CT(CLUSTER_ID = 0, "GICDISABLE"=false);
+        Clock100MHz : ClockDivider(mul=100000000);
+        Clock1Hz : MasterClock();
+        BusDecoder0 : PVBusDecoder();
+    }
+
+    connection
+    {
+        Clock1Hz.clk_out => Clock100MHz.clk_in;
+        Clock100MHz.clk_out => armcortexa53x1ct.clk_in;
+        Clock100MHz.clk_out => armcortexa57x1ct.clk_in;
+        armcortexa53x1ct.pvbus_m0 => BusDecoder0.pvbus_s;
+        armcortexa57x1ct.pvbus_m0 => BusDecoder1.pvbus_s;
+        BusDecoder0.pvbus_m_range[0x00000000..0x0fffffff] => Memory0.pvbus;
+        BusDecoder0.pvbus_m_range[0x1C090000..0x1C090fff] => pl011_uart.pvbus;
+
+        pl011_uart.serial_out => telnetterminal.serial;
+        Clock100MHz.clk_out => pl011_uart.clk_in_ref;
+    }
+
+    properties
+    {
+        component_type = "System";
+    }
+}
