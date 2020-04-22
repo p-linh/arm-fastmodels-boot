@@ -1,6 +1,6 @@
 sgproject "ARMv8_Minimal.sgproj"
 {
-TOP_LEVEL_COMPONENT = "ARMv8_Minimal_Dual";
+TOP_LEVEL_COMPONENT = "ARMv8_Minimal";
 ACTIVE_CONFIG_LINUX  = "default";
 config "default"
     {
