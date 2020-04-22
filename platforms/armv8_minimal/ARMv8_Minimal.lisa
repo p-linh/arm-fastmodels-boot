@@ -16,10 +16,8 @@ component ARMv8_Minimal
     connection
     {
         Clock1Hz.clk_out => Clock100MHz.clk_in;
-        Clock100MHz.clk_out => armcortexa53x1ct.clk_in;
         Clock100MHz.clk_out => armcortexa57x1ct.clk_in;
-        armcortexa53x1ct.pvbus_m0 => BusDecoder0.pvbus_s;
-        armcortexa57x1ct.pvbus_m0 => BusDecoder1.pvbus_s;
+        armcortexa57x1ct.pvbus_m0 => BusDecoder0.pvbus_s;
         BusDecoder0.pvbus_m_range[0x00000000..0x0fffffff] => Memory0.pvbus;
         BusDecoder0.pvbus_m_range[0x1C090000..0x1C090fff] => pl011_uart.pvbus;
 
