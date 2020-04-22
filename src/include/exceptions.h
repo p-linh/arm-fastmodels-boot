@@ -44,4 +44,33 @@
 #define AARCH32_EVECTOR_LOWER_EL_SERROR  0x13
 
 
+/*
+ * ===============================================================================================
+ * Base of the Exception Table
+ * ===============================================================================================
+ */
+
+#ifndef __ASSEMBLER__
+
+#include <types.h>
+
+extern long __exn_vectors_start;
+extern long __exn_vectors_end;
+
+
+/**
+ * @brief function to execute an exception return used to drop to lower execution level
+ *
+ * @param a0    the first argument
+ * @param a1    the second argument
+ * @param a2    the third arguent
+ * @param a3    the fourth argument
+ *
+ * this function is defined in exceptions.S
+ */
+void eret(uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3);
+
+
+#endif /* __ASSEMBLER__ */
+
 #endif /* __EXCEPTIONS_H_ */
