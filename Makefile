@@ -7,6 +7,9 @@
 
 IMGNAME=bootimg
 
+ARM_FASTMODELS_ROOT=/opt/arm/FastModelsTools_11.6
+
+
 #
 # Setting up the tools to be used for compilation and linking
 #
@@ -25,9 +28,10 @@ OBJDUMP=aarch64-linux-gnu-objdump
 #
 
 BUILDFLAGS =\
-	-O2 -g -Wall -Wextra -std=c17 \
+	-O2 -g -Wall -Wextra -std=c17 -Werror \
 	-fno-builtin \
 	-fno-unwind-tables \
+	-fno-stack-check -ffreestanding -fomit-frame-pointer \
 	-nostdinc \
 	-std=c99 \
 	-mcpu=cortex-a57 \
@@ -42,16 +46,17 @@ INC=-I./src/include
 
 CFILES=src/boot.c src/string.c
 
-SFILES=src/entry.S
+SFILES=src/entry.S src/exception_vectors.S
 
-OBJS=build/entry.o build/boot.o build/string.o build/serial.o build/printf.o
+OBJS=build/entry.o build/exception_vectors.o \
+	 build/boot.o build/exceptions.o build/string.o build/serial.o build/printf.o
 
 
 #
 # build target
 #
 
-all: bootimg
+all: $(IMGNAME).elf $(IMGNAME).bin
 
 
 #
@@ -92,15 +97,27 @@ build/$(IMGNAME).debug : build/$(IMGNAME).full
 
 
 # This is the assembly dump of the bootloader
-build/$(IMGNAME).asm : build/$(IMGNAME)
-	$(OBJDUMP) -d -M reg-names-raw build/$(IMGNAME) > $@
+build/$(IMGNAME).asm : build/$(IMGNAME).elf
+	$(OBJDUMP) -D build/$(IMGNAME).elf > $@
 
 
 # this is the bootimage elf
-build/$(IMGNAME) : build/$(IMGNAME).full build/$(IMGNAME).debug
-	$(OBJCOPY) -g -add-gnu-debuglink=./build/$(IMGNAME).debug ./build/$(IMGNAME).full $@
+build/$(IMGNAME).elf : build/$(IMGNAME).full build/$(IMGNAME).debug
+	$(OBJCOPY) -g --add-gnu-debuglink=./build/$(IMGNAME).debug ./build/$(IMGNAME).full $@
 
+# this is the boot image elf
+$(IMGNAME).elf : build/$(IMGNAME).elf build/$(IMGNAME).asm
+	cp build/$(IMGNAME).elf $(IMGNAME).elf
 
-$(IMGNAME) : build/$(IMGNAME)
-	cp build/$(IMGNAME) $(IMGNAME)
+# this is the boot image binary
+$(IMGNAME).bin : $(IMGNAME).elf
+	$(OBJCOPY) -O binary $(IMGNAME).elf $(IMGNAME).bin
 
+build/platforms/armv8_minimal/isim_system : platforms/armv8_minimal/ARMv8_Minimal.lisa  platforms/armv8_minimal/ARMv8_Minimal.sgproj
+	ARM_FM_ROOT=$(ARM_FASTMODELS_ROOT) ./tools/simgen_wrapper.sh  \
+		--num-comps-file 50 --gen-sysgen --warnings-as-errors \
+		--build-directory ./build/platforms/armv8_minimal \
+		-p platforms/armv8_minimal/ARMv8_Minimal.sgproj -b
+
+run_armv8_minimal: $(IMGNAME).bin build/platforms/armv8_minimal/isim_system
+	build/platforms/armv8_minimal/isim_system --data Memory0=./armv8/sbin/boot_a57_fvp.bin@0x0
