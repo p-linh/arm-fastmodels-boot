@@ -120,4 +120,4 @@ build/platforms/armv8_minimal/isim_system : platforms/armv8_minimal/ARMv8_Minima
 		-p platforms/armv8_minimal/ARMv8_Minimal.sgproj -b
 
 run_armv8_minimal: $(IMGNAME).bin build/platforms/armv8_minimal/isim_system
-	build/platforms/armv8_minimal/isim_system --data Memory0=./armv8/sbin/boot_a57_fvp.bin@0x0
+	build/platforms/armv8_minimal/isim_system --data Memory0=$(IMGNAME).bin@0x0
