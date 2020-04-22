@@ -16,4 +16,7 @@
 #define EXCEPTION_STACK_SIZE (4096)
 
 
+///< this is the offset of the MPID field in the bootinfo struct
+#define BOOTINFO_MPID_OFFSET 8
+
 #endif /* __OFFSETS_H_ */
