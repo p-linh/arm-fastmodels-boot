@@ -51,7 +51,7 @@ void bootloader_init(struct bootloader_args *data)
     exceptions_setup_vectors();
 
     /* configure and enable MMU */
-    // mmu_configure_and_enable();
+    mmu_configure_and_enable();
 
     /* enable caches */
     cachectrl_enable_all_caches();

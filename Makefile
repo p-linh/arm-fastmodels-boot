@@ -45,7 +45,7 @@ LDFLAGS=\
 INC=-I./src/include
 
 CFILES=src/boot.c src/string.c src/processor.c src/printf.c src/serial.c src/exceptions.c \
-       src/mmu.c src/cachectrl.c
+       src/mmu.c src/cachectrl.c src/ptable.c
 
 SFILES=src/entry.S src/exception_vectors.S
 

@@ -7,6 +7,7 @@ component ARMv8_Minimal
         pl011_uart : PL011_Uart("out_file"="-");
 
         Memory0 : RAMDevice();
+        DRAM0 : RAMDevice();
         armcortexa57x1ct : ARMCortexA53x1CT(CLUSTER_ID = 0, "GICDISABLE"=false);
         Clock100MHz : ClockDivider(mul=100000000);
         Clock1Hz : MasterClock();
@@ -20,7 +21,7 @@ component ARMv8_Minimal
         armcortexa57x1ct.pvbus_m0 => BusDecoder0.pvbus_s;
         BusDecoder0.pvbus_m_range[0x00000000..0x0fffffff] => Memory0.pvbus;
         BusDecoder0.pvbus_m_range[0x1C090000..0x1C090fff] => pl011_uart.pvbus;
-
+        BusDecoder0.pvbus_m_range[0x80000000..0xffffffff] => DRAM0.pvbus;
         pl011_uart.serial_out => telnetterminal.serial;
         Clock100MHz.clk_out => pl011_uart.clk_in_ref;
     }
