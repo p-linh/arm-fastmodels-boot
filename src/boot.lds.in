@@ -45,6 +45,24 @@ SECTIONS {
         *(.rodata.*);
     }
 
+    . = ALIGN(4k);
+    __pagetables_start = . ;
+    .pagetables . :
+    {
+        page_table_root = . ;
+        __pagetables_L0_start = . ;
+        *(.pagetables.l0);
+        __pagetables_L1_start = . ;
+        *(.pagetables.l1);
+        __pagetables_L2_start = . ;
+        *(.pagetables.l2);
+        __pagetables_L3_start = . ;
+        *(.pagetables.l3);
+    } : load
+    __pagetables_end = .;
+
+
+
     .data . :
     {
         *(.data);
