@@ -44,13 +44,11 @@ LDFLAGS=\
 
 INC=-I./src/include
 
-CFILES=src/boot.c src/string.c
+CFILES=src/boot.c src/string.c src/processor.c src/printf.c src/serial.c src/exceptions.c
 
 SFILES=src/entry.S src/exception_vectors.S
 
-OBJS=build/entry.o build/exception_vectors.o \
-	 build/boot.o build/exceptions.o build/string.o build/serial.o build/printf.o
-
+OBJS=$(CFILES:%.o=%.c) $(SFILES:%.o=%.S)
 
 #
 # build target

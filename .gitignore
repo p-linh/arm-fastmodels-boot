@@ -53,3 +53,4 @@ dkms.conf
 
 # all builds
 build/*
+bootimg*
