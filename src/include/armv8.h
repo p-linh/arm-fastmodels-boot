@@ -88,30 +88,58 @@ static inline uint8_t armv8_midr_el1_get_revision(void)
 
 static inline void armv8_vbar_el3_write(uint64_t addr)
 {
-    __asm volatile("msr vbar_el3, %[vbar_el3]" : : [ vbar_el3 ] "r"(addr));
+    __asm volatile("msr vbar_el3, %[vbar_el3]\n"
+                   "isb \n"
+                   :
+                   : [ vbar_el3 ] "r"(addr));
 }
 
 static inline void armv8_vbar_el2_write(uint64_t addr)
 {
-    __asm volatile("msr vbar_el2, %[vbar_el2]" : : [ vbar_el2 ] "r"(addr));
+    __asm volatile("msr vbar_el2, %[vbar_el2]\n"
+                   "isb \n"
+                   :
+                   : [ vbar_el2 ] "r"(addr));
 }
 
 static inline void armv8_vbar_el1_write(uint64_t addr)
 {
-    __asm volatile("msr vbar_el1, %[vbar_el1]" : : [ vbar_el1 ] "r"(addr));
+    __asm volatile("msr vbar_el1, %[vbar_el1]\n"
+                   "isb \n"
+                   :
+                   : [ vbar_el1 ] "r"(addr));
 }
 
 /*
  * ======================================================================================
- * Processor Identification Registers
+ * SCR_EL3, Secure Configuration Register
  * ======================================================================================
  */
+
+static inline uint64_t armv8_scr_el3_read(void)
+{
+    uint64_t val;
+    __asm volatile("mrs %[val], SCR_EL3\n"
+                   "isb \n"
+                   : [ val ] "=r"(val));
+
+    return val;
+}
+
+static inline void armv8_scr_el3_write(uint64_t val)
+{
+    __asm volatile("msr SCR_EL3, %[val]\n"
+                   "isb \n"
+                   :
+                   : [ val ] "r"(val));
+}
 
 
 static inline void armv8_switch_to_non_secure_world(void)
 {
     if (armv8_get_current_el() == 3) {
-        // armv8_SCR_EL3_NS_wrf(NULL, 0x1);
+        uint64_t val = armv8_scr_el3_read();
+        armv8_scr_el3_write(val | 0x1);
     }
 }
 
