@@ -295,7 +295,7 @@ el_lo_aarch64_sync_err:
     invalid_exception AARCH64_EVECTOR_LOWER_EL_SYNC
 
 .align 7
-__exnvectors_end:
+__exn_vectors_end:
 
 
 /*

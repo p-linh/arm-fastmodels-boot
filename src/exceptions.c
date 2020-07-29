@@ -11,10 +11,18 @@
 #include <types.h>
 #include <exceptions.h>
 #include <stdio.h>
+#include <armv8.h>
+#include <logging.h>
 
-#define VECTORNAMECASE(_var, _x) \
-    case _x:                 \
-        _var = #_x;          \
+///< symbol of the exception vector start
+extern long __exn_vectors_start;
+
+///< symbol of the exception vector end
+extern long __exn_vectors_end;
+
+#define VECTORNAMECASE(_var, _x)                                                                  \
+    case _x:                                                                                      \
+        _var = #_x;                                                                               \
         break;
 
 /**
@@ -34,7 +42,7 @@ void exceptions_handle_unsupported(uint64_t epc, uint64_t spsr, uint64_t esr, ui
     char vecname_buf[20];
     snprintf(vecname_buf, sizeof(vecname_buf), "0x%016" PRIx64, vector);
 
-    switch(vector) {
+    switch (vector) {
         VECTORNAMECASE(vecname, AARCH64_EVECTOR_UNDEFINED)
         VECTORNAMECASE(vecname, AARCH64_EVECTOR_EL_CURRENT_STACK_EL0_SYNC)
         VECTORNAMECASE(vecname, AARCH64_EVECTOR_EL_CURRENT_STACK_EL0_IRQ)
@@ -52,8 +60,8 @@ void exceptions_handle_unsupported(uint64_t epc, uint64_t spsr, uint64_t esr, ui
         VECTORNAMECASE(vecname, AARCH32_EVECTOR_LOWER_EL_IRQ)
         VECTORNAMECASE(vecname, AARCH32_EVECTOR_LOWER_EL_FIQ)
         VECTORNAMECASE(vecname, AARCH32_EVECTOR_LOWER_EL_SERROR);
-        default:
-            vecname = "unknown";
+    default:
+        vecname = "unknown";
     }
 
 
@@ -84,4 +92,29 @@ void exceptions_handle_aarch64_sync(uint32_t fid, uint64_t arg0, uint64_t arg1, 
     (void)arg4;
     (void)arg5;
     (void)context;
+}
+
+
+/**
+ * @brief configures the exception vectors
+ */
+void exceptions_setup_vectors(void)
+{
+    if ((uint64_t)&__exn_vectors_end - (uint64_t)&__exn_vectors_start != EXCEPTION_VECTOR_SIZE) {
+        WARN("Unexpected size of the vector table. processd with caution.");
+    }
+
+    if (armv8_get_current_el() == 3) {
+        MSG("setting up exception vectors to 0x%" PRIx64 " (el3)\n",
+            (uint64_t)&__exn_vectors_start);
+        armv8_vbar_el3_write((uint64_t)&__exn_vectors_start);
+    } else if (armv8_get_current_el() == 2) {
+        MSG("setting up exception vectors to 0x%" PRIx64 " (el2)\n",
+            (uint64_t)&__exn_vectors_start);
+        armv8_vbar_el1_write((uint64_t)&__exn_vectors_start);
+    } else if (armv8_get_current_el() == 1) {
+        MSG("setting up exception vectors to 0x%" PRIx64 " (el1)\n",
+            (uint64_t)&__exn_vectors_start);
+        armv8_vbar_el1_write((uint64_t)&__exn_vectors_start);
+    }
 }

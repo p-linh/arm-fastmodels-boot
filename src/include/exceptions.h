@@ -43,6 +43,8 @@
 #define AARCH32_EVECTOR_LOWER_EL_FIQ 0x12
 #define AARCH32_EVECTOR_LOWER_EL_SERROR 0x13
 
+/* */
+#define EXCEPTION_VECTOR_SIZE 2048
 
 /*
  * ===============================================================================================
@@ -53,10 +55,6 @@
 #ifndef __ASSEMBLER__
 
 #include <types.h>
-
-extern long __exn_vectors_start;
-extern long __exn_vectors_end;
-
 
 /**
  * @brief function to execute an exception return used to drop to lower execution level
@@ -96,6 +94,13 @@ void exceptions_handle_unsupported(uint64_t epc, uint64_t spsr, uint64_t esr, ui
  */
 void exceptions_handle_aarch64_sync(uint32_t fid, uint64_t arg0, uint64_t arg1, uint64_t arg2,
                                     uint64_t arg3, uint64_t arg4, uint64_t arg5, uint64_t context);
+
+
+/**
+ * @brief configures the exception vectors
+ */
+void exceptions_setup_vectors(void);
+
 
 #endif /* __ASSEMBLER__ */
 
