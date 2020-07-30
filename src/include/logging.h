@@ -15,6 +15,6 @@
 
 #define WARN(format, ...) printf("[ARMv8]: WARNING " format, ## __VA_ARGS__ )
 
-#define ERROR(format, ...) printf("[ARMv8]: " format, ## __VA_ARGS__ )
+#define ERROR(format, ...) printf("[ARMv8]: ERROR " format, ## __VA_ARGS__ )
 
 #endif /* LOGGING_H_ */
