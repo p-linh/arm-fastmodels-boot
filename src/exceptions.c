@@ -66,6 +66,11 @@ void exceptions_handle_unsupported(uint64_t epc, uint64_t spsr, uint64_t esr, ui
 
 
     (void)vecname;
+
+    ERROR("Exception %s happened\n", vecname);
+    ERROR("Aborting.");
+    while(1)
+        ;
 }
 
 

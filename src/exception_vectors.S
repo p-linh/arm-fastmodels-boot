@@ -289,13 +289,21 @@ el_lo_aarch32_fiq:
 el_lo_aarch32_serror:
     invalid_exception AARCH32_EVECTOR_LOWER_EL_SERROR
 
+
+/*
+ * 0x800 - End of Exception Table
+ * --------------------------------------------------------------------------
+ */
+
 .align 7
+__exn_vectors_end:
+
+
 
 el_lo_aarch64_sync_err:
     invalid_exception AARCH64_EVECTOR_LOWER_EL_SYNC
 
-.align 7
-__exn_vectors_end:
+
 
 
 /*
