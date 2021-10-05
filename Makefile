@@ -7,8 +7,8 @@
 
 IMGNAME=bootimg
 
-ARM_FASTMODELS_ROOT=/opt/arm/FastModelsTools_11.6
-
+# the fastmodels simgen binary, for running the 
+SIMGEN := $(shell PATH=$(PATH) which simgen)
 
 #
 # Setting up the tools to be used for compilation and linking
@@ -57,6 +57,11 @@ OBJS=$(CFILES:%.o=%.c) $(SFILES:%.o=%.S)
 
 all: $(IMGNAME).elf $(IMGNAME).bin
 
+#
+# cleanup 
+#
+clean:
+	rm -rf build $(IMGNAME).elf $(IMGNAME).bin
 
 #
 # Compiling single files
@@ -75,7 +80,7 @@ build/%.o : src/%.c build
 
 
 # this generates the linker script for the bootimage
-build/$(IMGNAME).lds : src/boot.lds.in
+build/$(IMGNAME).lds : src/boot.lds.in build
 	$(CPP) $(INC) -D__ASSEMBLER__ -P src/boot.lds.in $@
 
 
@@ -112,11 +117,20 @@ $(IMGNAME).elf : build/$(IMGNAME).elf build/$(IMGNAME).asm
 $(IMGNAME).bin : $(IMGNAME).elf
 	$(OBJCOPY) -O binary $(IMGNAME).elf $(IMGNAME).bin
 
+
+
+
+
 build/platforms/armv8_minimal/isim_system : platforms/armv8_minimal/ARMv8_Minimal.lisa  platforms/armv8_minimal/ARMv8_Minimal.sgproj
-	ARM_FM_ROOT=$(ARM_FASTMODELS_ROOT) ./tools/simgen_wrapper.sh  \
-		--num-comps-file 50 --gen-sysgen --warnings-as-errors \
-		--build-directory ./build/platforms/armv8_minimal \
-		-p platforms/armv8_minimal/ARMv8_Minimal.sgproj -b
+ifndef SIMGEN
+	$(error "No 'simgen' in PATH, please source 'FAST_MODELS_ROOT/source_all.sh'")
+endif
+	$(SIMGEN) --num-comps-file 50 --gen-sysgen --warnings-as-errors \
+		   --build-directory ./build/platforms/armv8_minimal \
+		   -p platforms/armv8_minimal/ARMv8_Minimal.sgproj -b
 
 run_armv8_minimal: $(IMGNAME).bin build/platforms/armv8_minimal/isim_system
 	build/platforms/armv8_minimal/isim_system --data Memory0=$(IMGNAME).bin@0x0
+
+run_armv8_minimal_debug: $(IMGNAME).bin build/platforms/armv8_minimal/isim_system
+	bash ./tools/run_debugger.sh $(IMGNAME).bin $(IMGNAME).elf
