@@ -7,7 +7,7 @@
 
 IMGNAME=bootimg
 
-# the fastmodels simgen binary, for running the 
+# the fastmodels simgen binary, for running the
 SIMGEN := $(shell PATH=$(PATH) which simgen)
 
 #
@@ -58,7 +58,7 @@ OBJS=$(CFILES:%.o=%.c) $(SFILES:%.o=%.S)
 all: $(IMGNAME).elf $(IMGNAME).bin
 
 #
-# cleanup 
+# cleanup
 #
 clean:
 	rm -rf build $(IMGNAME).elf $(IMGNAME).bin
@@ -88,11 +88,10 @@ build/$(IMGNAME).lds : src/boot.lds.in build
 # Building the boot image
 #
 
-
 # This is the bootloader elf with all debug symbols etc included
 build/$(IMGNAME).full : $(OBJS) build/$(IMGNAME).lds
 	$(CC) $(LDFLAGS)  $(INC) -T./build/$(IMGNAME).lds -Wl,-Map,./build/$(IMGNAME).map -o $@ $(OBJS)
-	bash -c "echo -e '\0002'" | dd of=$@ bs=1 seek=16 count=1 conv=notrunc status=noxfer
+	bash -c "echo -e '\0002'" | dd of=$@ bs=1 seek=16 count=1 conv=notrunc status=noxfer 2>&1
 
 
 # This is the debug information of the bootloader elf
@@ -116,8 +115,6 @@ $(IMGNAME).elf : build/$(IMGNAME).elf build/$(IMGNAME).asm
 # this is the boot image binary
 $(IMGNAME).bin : $(IMGNAME).elf
 	$(OBJCOPY) -O binary $(IMGNAME).elf $(IMGNAME).bin
-
-
 
 
 
