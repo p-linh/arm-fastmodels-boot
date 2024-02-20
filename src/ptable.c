@@ -715,7 +715,8 @@ const union armv8_ptable  armv8_ptable[ARMV8_PTABLES_NUM]
         [2] = ARMV8_L1_MEMORY_ENTRY(0x80000000ULL),
         /* VA: 0xc0000000 .. 0xffffffff */
         [3] = ARMV8_L1_MEMORY_ENTRY(0xC0000000ULL),
-        [4] = ARMV8_L1_ENTRY_INVALID,
+        /* VA: 0x100000000 .. 0x13fffffff */
+        [4] = ARMV8_L1_MEMORY_ENTRY(0x100000000ULL),
         [5] = ARMV8_L1_ENTRY_INVALID,
         [6] = ARMV8_L1_ENTRY_INVALID,
         [7] = ARMV8_L1_ENTRY_INVALID,
