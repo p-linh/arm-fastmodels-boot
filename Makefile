@@ -40,6 +40,7 @@ BUILDFLAGS =\
 LDFLAGS=\
 	-O2 -g -Wl,-N -pie \
 	-fno-builtin -nostdlib \
+	-Wl,--no-warn-rwx-segments \
 	-Wl,--fatal-warnings -Wl,--build-id=none
 
 INC=-I./src/include
