@@ -21,7 +21,7 @@ PHDRS {
 }
 
 SECTIONS {
-    . = 0x0;
+    . = 0x41000000;
     . = ALIGN(4k);
     __bootloader_first_byte = .;
 
@@ -30,7 +30,7 @@ SECTIONS {
         *(.bootseq)
     } :load
 
-    .text : {
+    .text :  {
         *(.text);
         *(.text.unlikely);
     }  :load

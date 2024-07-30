@@ -132,3 +132,11 @@ run_armv8_minimal: $(IMGNAME).bin build/platforms/armv8_minimal/isim_system
 
 run_armv8_minimal_debug: $(IMGNAME).bin build/platforms/armv8_minimal/isim_system
 	bash ./tools/run_debugger.sh $(IMGNAME).bin $(IMGNAME).elf
+
+
+run_qemu: $(IMGNAME).elf
+	qemu-system-aarch64 \
+		-m 2g -machine virt,secure=off \
+		-cpu cortex-a53 -device loader,file=bootimg.elf \
+		-device loader,addr=0x41000000,cpu-num=0 \
+		-nographic -display none

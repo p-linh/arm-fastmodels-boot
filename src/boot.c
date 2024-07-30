@@ -25,8 +25,6 @@
 struct bootloader_args bootloader_args = BOOTLOADER_ARGS_INIT(CONFIG_BSP_MIPD,
                                                               CONFIG_SERIAL_CONSOLE_BASE);
 
-
-
 void bootloader_init(struct bootloader_args *data) __attribute__((noreturn));
 void bootloader_init(struct bootloader_args *data)
 {
@@ -39,6 +37,10 @@ void bootloader_init(struct bootloader_args *data)
     /* initialize the serial console */
     serial_console_early_init(data->serial[CONFIG_SERIAL_CONSOLE_PORT]);
     serial_debug_early_init(data->serial[CONFIG_SERIAL_DEBUG_PORT]);
+
+    serial_console_putchar('A');
+    serial_console_putchar('B');
+    serial_console_putchar('\n');
 
     /* print the boot banner */
     MSG("###############################################################################\n");
