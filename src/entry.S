@@ -119,7 +119,7 @@ bootloader_startup_fn_arg:
 
 /* NOTE: This stack is shared among the cores so ensure mutual exclusion */
 
-.align 4
+.align 8
 .global __bootloader_stack
 .global __bootloader_stack_end
 __bootloader_stack:

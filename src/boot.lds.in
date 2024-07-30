@@ -18,6 +18,8 @@ PHDRS {
     load PT_LOAD ;
     dynamic PT_DYNAMIC ;
     note PT_NOTE ;
+    text PT_LOAD FLAGS(5);
+    data PT_LOAD  FLAGS(6);
 }
 
 SECTIONS {
@@ -26,14 +28,14 @@ SECTIONS {
     __bootloader_first_byte = .;
 
     __bootloader_text_first_byte = .;
-    bootseq : {
+    bootseq (READONLY): {
         *(.bootseq)
-    } :load
+    } :text
 
-    .text :  {
+    .text (READONLY):  {
         *(.text);
         *(.text.unlikely);
-    }  :load
+    }  :text
     __bootloader_text_last_byte = .;
 
 
