@@ -8,6 +8,7 @@
 #include <armv8.h>
 #include <mmu.h>
 #include <logging.h>
+#include <serial.h>
 
 
 ///< symbol of the exception vector start
@@ -221,6 +222,12 @@ void mmu_disable(void)
  */
 void mmu_configure_and_enable(void)
 {
+    serial_console_putchar('O');
+    serial_console_putchar('\n');
     mmu_configure();
+    serial_console_putchar('P');
+    serial_console_putchar('\n');
     mmu_enable();
+    serial_console_putchar('Q');
+    serial_console_putchar('\n');
 }
