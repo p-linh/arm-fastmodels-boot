@@ -924,6 +924,49 @@ static int _vsnprintf(out_fct_type out, char *buffer, const size_t maxlen, const
 
 ///////////////////////////////////////////////////////////////////////////////
 
+char *reverse(char *str)
+{
+    char tmp, *src, *dst;
+    size_t len;
+    if (str != NULL)
+    {
+        len = _strnlen_s(str, 100);
+        if (len > 1) {
+            src = str;
+            dst = src + len - 1;
+            while (src < dst) {
+                tmp = *src;
+                *src++ = *dst;
+                *dst-- = tmp;
+            }
+        }
+    }
+    return str;
+}
+
+
+
+/* itoa from K&R */
+void itoa_hex(uint64_t n, char s[])
+{
+    int i;
+
+    i = 0;
+
+    do {                       /* generate digits in reverse order */
+        int remainder = n % 16;
+        if (remainder < 10) {
+            s[i++] = remainder + '0'; /* get next digit */
+        } else {
+            s[i++] = (remainder -10) +  'A'; /* get next digit */
+        }
+    } while ((n /= 16) > 0);   /* delete it */
+
+    reverse(s);
+    s[i] = '\0';
+    return;
+}
+
 int printf(const char *format, ...)
 {
     va_list va;

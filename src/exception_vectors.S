@@ -48,11 +48,11 @@
     add sp, x0, #(EXCEPTION_STACK_SIZE - 16)
 
     /* store spsr and other information */
-    mrs x0, elr_el3
-    mrs x1, spsr_el3
+    mrs x0, elr_el1
+    mrs x1, spsr_el1
 
     /* Exception Syndrome Register */
-    mrs x2, esr_el3
+    mrs x2, esr_el1
 
     /* Exception vector */
     mov x3, \vector
@@ -189,7 +189,7 @@ el_lo_aarch64_sync:
     msr    daifclr, #(1 << 2)
 
     /* we expect only SMC calls to happen */
-    mrs    x8, esr_el3
+    mrs    x8, esr_el1
     ubfx   x8, x8, #26, #6
     cmp    x8, #0x17
     b.ne   el_lo_aarch64_sync_err

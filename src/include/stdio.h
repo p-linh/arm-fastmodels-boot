@@ -19,5 +19,6 @@ int snprintf(char *buffer, size_t count, const char *format, ...);
 int vsnprintf(char *buffer, size_t count, const char *format, va_list va);
 int vprintf(const char *format, va_list va);
 int fctprintf(void (*out)(char character, void *arg), void *arg, const char *format, ...);
+void itoa_hex(uint64_t n, char s[]);
 
 #endif /* __STDIO_H_ */

@@ -28,17 +28,13 @@ bool mmu_enabled(void)
     uint8_t el =armv8_get_current_el();
     switch (el) {
     case 3:
-        DBGG("IS mmu_enabled in EL 3?\n");
             return armv8_sctlr_el3_get_m();
         break;
     case 1:
-        DBGG("IS mmu_enabled in EL 1?\n");
         return armv8_sctlr_el1_get_m();
         break;
     case 2:
     default:
-        serial_console_putchar('-');
-        serial_console_putchar('\n');
         WARN("checking MMU enabled stated on this el not implemented\n");
         return false;
     }
@@ -61,7 +57,7 @@ void mmu_write_ttbr0(uint64_t addr)
         break;
     case 2:
     default:
-        DBGG("writing to ttbr0 on this el not implemented\n");
+        WARN("writing to ttbr0 on this el not implemented\n");
     }
 }
 
@@ -79,7 +75,7 @@ uint64_t mmu_read_ttbr0(void)
     case 2:
     case 1:
     default:
-        DBGG("reading to ttbr0 on this el not implemented\n");
+        WARN("reading to ttbr0 on  el1/el2 not implemented\n");
         return (lpaddr_t)-1;
     }
 }
@@ -102,7 +98,7 @@ void mmu_configure_memory_attributes(uint64_t attrs)
         break;
     case 2:
     default:
-        DBGG("reading to ttbr0 on this el not implemented\n");
+        WARN("reading to ttbr0 on this el not implemented\n");
     }
 }
 
@@ -177,7 +173,7 @@ void mmu_configure_translation_scheme(void)
     } break;
     case 2:
     default:
-        DBGG("configuring the TCR on this el not implemented\n");
+        WARN("configuring the TCR on this el not implemented\n");
     }
 }
 
@@ -246,15 +242,13 @@ void mmu_enable(void)
     switch (el) {
     case 3:
             armv8_sctlr_el3_set_m(1);
-            DBGG("mmu_enable Done in EL 3\n");
         break;
     case 1:
             armv8_sctlr_el1_set_m(1);
-            DBGG("mmu_enable Done in EL 1\n");
         break;
     case 2:
     default:
-        DBGG("checking MMU enabled stated on this el not implemented\n");
+        WARN("checking MMU enabled stated on this el not implemented\n");
     }
 }
 
@@ -271,12 +265,6 @@ void mmu_disable(void)
  */
 void mmu_configure_and_enable(void)
 {
-    serial_console_putchar('O');
-    serial_console_putchar('\n');
     mmu_configure();
-    serial_console_putchar('P');
-    serial_console_putchar('\n');
     mmu_enable();
-    serial_console_putchar('Q');
-    serial_console_putchar('\n');
 }
