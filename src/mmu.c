@@ -25,10 +25,9 @@ extern long __pagetables_end;
  */
 bool mmu_enabled(void)
 {
-    uint8_t el =armv8_get_current_el();
-    switch (el) {
+    switch (armv8_get_current_el()) {
     case 3:
-            return armv8_sctlr_el3_get_m();
+        return armv8_sctlr_el3_get_m();
         break;
     case 1:
         return armv8_sctlr_el1_get_m();
@@ -218,10 +217,10 @@ void mmu_configure(void)
          *   - attr0 = Normal Memory, Inner Write-back non transient  (0xff)
          *   - attr1 = Device-nGnRnE memory                           (0x00)
          */
-            mmu_configure_memory_attributes(0x00ff);
+        mmu_configure_memory_attributes(0x00ff);
 
         /* configure the translation scheme */
-            mmu_configure_translation_scheme();
+        mmu_configure_translation_scheme();
 
         /* write the register */
         mmu_write_ttbr0((lpaddr_t)&__pagetables_start);
