@@ -25,13 +25,20 @@ extern long __pagetables_end;
  */
 bool mmu_enabled(void)
 {
-    switch (armv8_get_current_el()) {
+    uint8_t el =armv8_get_current_el();
+    switch (el) {
     case 3:
-        return armv8_sctlr_el3_get_m();
+        DBGG("IS mmu_enabled in EL 3?\n");
+            return armv8_sctlr_el3_get_m();
+        break;
+    case 1:
+        DBGG("IS mmu_enabled in EL 1?\n");
+        return armv8_sctlr_el1_get_m();
         break;
     case 2:
-    case 1:
     default:
+        serial_console_putchar('-');
+        serial_console_putchar('\n');
         WARN("checking MMU enabled stated on this el not implemented\n");
         return false;
     }
@@ -49,10 +56,12 @@ void mmu_write_ttbr0(uint64_t addr)
     case 3:
         return armv8_ttbr0_el3_write(addr);
         break;
-    case 2:
     case 1:
+        return armv8_ttbr0_el1_write(addr);
+        break;
+    case 2:
     default:
-        WARN("writing to ttbr0 on this el not implemented\n");
+        DBGG("writing to ttbr0 on this el not implemented\n");
     }
 }
 
@@ -70,7 +79,7 @@ uint64_t mmu_read_ttbr0(void)
     case 2:
     case 1:
     default:
-        WARN("reading to ttbr0 on this el not implemented\n");
+        DBGG("reading to ttbr0 on this el not implemented\n");
         return (lpaddr_t)-1;
     }
 }
@@ -87,10 +96,13 @@ void mmu_configure_memory_attributes(uint64_t attrs)
     case 3:
         armv8_mair_el3_write(attrs);
         break;
-    case 2:
     case 1:
+        /* assumed same format at el3 */
+        armv8_mair_el1_write(attrs);
+        break;
+    case 2:
     default:
-        WARN("reading to ttbr0 on this el not implemented\n");
+        DBGG("reading to ttbr0 on this el not implemented\n");
     }
 }
 
@@ -138,10 +150,34 @@ void mmu_configure_translation_scheme(void)
         isb();
         armv8_tcr_el3_write(val);
     } break;
+    case 1: { /* assumed same format at el1 */
+        // 48b user VA
+        uint64_t val = CONFIG_TCR_TTBR0_TRANSLATION_SIZE;
+
+        // Inner cacheability attribute for memory associated with translation table walks
+        val |= (CONFIG_TCR_WRITE_BACK_ALLOCATE_CACHE << 8);
+
+        // Outer cacheability attribute for memory associated with translation table walks
+        val |= (CONFIG_TCR_WRITE_BACK_ALLOCATE_CACHE << 10);
+
+        // Shareability attribute for memory associated with translation table walks
+        val |= (CONFIG_TCR_INNER_SHARABLE << 12);
+
+        // Granule size for the TTBR0_EL3.
+        val |= (CONFIG_TCR_GRANULE_4K << 14);
+
+        // Physical Address Size.
+        val |= (CONFIG_TCR_PHYSICAL_ADDRESS_SIZE_48_BITS << 16);
+
+        /// Top Byte Ignored?
+        val |= (CONFIG_TCR_TOP_BYTE_USED << 20);
+
+        isb();
+        armv8_tcr_el1_write(val);
+    } break;
     case 2:
-    case 1:
     default:
-        WARN("configuring the TCR on this el not implemented\n");
+        DBGG("configuring the TCR on this el not implemented\n");
     }
 }
 
@@ -186,10 +222,10 @@ void mmu_configure(void)
          *   - attr0 = Normal Memory, Inner Write-back non transient  (0xff)
          *   - attr1 = Device-nGnRnE memory                           (0x00)
          */
-        mmu_configure_memory_attributes(0x00ff);
+            mmu_configure_memory_attributes(0x00ff);
 
         /* configure the translation scheme */
-        mmu_configure_translation_scheme();
+            mmu_configure_translation_scheme();
 
         /* write the register */
         mmu_write_ttbr0((lpaddr_t)&__pagetables_start);
@@ -206,7 +242,20 @@ void mmu_configure(void)
  */
 void mmu_enable(void)
 {
-    armv8_sctlr_el3_set_m(1);
+    uint8_t el =armv8_get_current_el();
+    switch (el) {
+    case 3:
+            armv8_sctlr_el3_set_m(1);
+            DBGG("mmu_enable Done in EL 3\n");
+        break;
+    case 1:
+            armv8_sctlr_el1_set_m(1);
+            DBGG("mmu_enable Done in EL 1\n");
+        break;
+    case 2:
+    default:
+        DBGG("checking MMU enabled stated on this el not implemented\n");
+    }
 }
 
 /**

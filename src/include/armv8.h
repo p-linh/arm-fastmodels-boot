@@ -169,6 +169,28 @@ static inline void armv8_switch_to_non_secure_world(void)
 
 /*
  * ======================================================================================
+ * SCTLR_EL1, System Control Register (EL1)
+ * ======================================================================================
+ */
+static inline uint64_t armv8_sctlr_el1_read(void)
+{
+    uint64_t val;
+    __asm volatile("mrs %[val], SCTLR_EL1\n"
+                   "isb \n"
+                   : [ val ] "=r"(val));
+
+    return val;
+}
+
+static inline void armv8_sctlr_el1_write(uint64_t val)
+{
+    __asm volatile("msr SCTLR_EL1, %[val]\n"
+                   "isb \n"
+                   :
+                   : [ val ] "r"(val));
+}
+/*
+ * ======================================================================================
  * SCTLR_EL3, System Control Register (EL3)
  * ======================================================================================
  */
@@ -200,6 +222,13 @@ static inline bool armv8_sctlr_el3_get_m(void)
     return (val & 0x1) == 0x1;
 }
 
+static inline bool armv8_sctlr_el1_get_m(void)
+{
+    uint64_t val;
+    val = armv8_sctlr_el1_read();
+    return (val & 0x1) == 0x1;
+}
+
 static inline void armv8_sctlr_el3_set_m(uint64_t value)
 {
     uint64_t val;
@@ -207,6 +236,15 @@ static inline void armv8_sctlr_el3_set_m(uint64_t value)
     val &= ~(0x1);
     val |= value;
     armv8_sctlr_el3_write(val);
+}
+
+static inline void armv8_sctlr_el1_set_m(uint64_t value)
+{
+    uint64_t val;
+    val = armv8_sctlr_el1_read();
+    val &= ~(0x1);
+    val |= value;
+    armv8_sctlr_el1_write(val);
 }
 
 static inline bool armv8_sctlr_el3_get_c(void)
@@ -244,6 +282,29 @@ static inline void armv8_sctlr_el3_set_i(uint64_t value)
 
 /*
  * ======================================================================================
+ * TTBR0_EL1, Translation Base Register
+ * ======================================================================================
+ */
+
+static inline void armv8_ttbr0_el1_write(uint64_t val)
+{
+    __asm volatile("msr TTBR0_EL1, %[val]\n"
+                   "isb \n"
+                   :
+                   : [ val ] "r"(val));
+}
+
+static inline uint64_t armv8_ttbr0_el1_read(void)
+{
+    uint64_t val;
+    __asm volatile("mrs %[val], TTBR0_EL1\n"
+                   "isb \n"
+                   : [ val ] "=r"(val));
+
+    return val;
+}
+/*
+ * ======================================================================================
  * TTBR0_EL3, Translation Base Register
  * ======================================================================================
  */
@@ -266,6 +327,29 @@ static inline uint64_t armv8_ttbr0_el3_read(void)
     return val;
 }
 
+/*
+ * ======================================================================================
+ * MAIR_EL1, Memory Attribute Indirection Register (EL1)
+ * ======================================================================================
+ */
+
+static inline void armv8_mair_el1_write(uint64_t val)
+{
+    __asm volatile("msr MAIR_EL1, %[val]\n"
+                   "isb \n"
+                   :
+                   : [ val ] "r"(val));
+}
+
+static inline uint64_t armv8_mair_el1_read(void)
+{
+    uint64_t val;
+    __asm volatile("mrs %[val], MAIR_EL1\n"
+                   "isb \n"
+                   : [ val ] "=r"(val));
+
+    return val;
+}
 
 /*
  * ======================================================================================
@@ -291,6 +375,29 @@ static inline uint64_t armv8_mair_el3_read(void)
     return val;
 }
 
+/*
+ * ======================================================================================
+ * TCR_EL1, Translation Control Register (EL1)
+ * ======================================================================================
+ */
+
+static inline void armv8_tcr_el1_write(uint64_t val)
+{
+    __asm volatile("msr TCR_EL1, %[val]\n"
+                   "isb \n"
+                   :
+                   : [ val ] "r"(val));
+}
+
+static inline uint64_t armv8_tcr_el1_read(void)
+{
+    uint64_t val;
+    __asm volatile("mrs %[val], TCR_EL1\n"
+                   "isb \n"
+                   : [ val ] "=r"(val));
+
+    return val;
+}
 
 /*
  * ======================================================================================

@@ -121,6 +121,15 @@ static inline char serial_console_getchar(void)
 }
 
 
+static inline void DBGG(const char *buf){
+
+    const char *c =  buf;
+    while (*c != '\0') {
+        serial_console_putchar(*c);
+        c++;
+    }
+    serial_console_putchar('\n');
+}
 /*
  * ===============================================================================================
  * Debug Serial

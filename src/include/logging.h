@@ -9,6 +9,7 @@
 #define LOGGING_H_ 1
 
 #include <stdio.h>
+#include <serial.h>
 
 ///< a basic message printing macro
 #define MSG(format, ...) //printf("[ARMv8]: " format, ## __VA_ARGS__ )

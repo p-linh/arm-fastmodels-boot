@@ -38,10 +38,7 @@ void bootloader_init(struct bootloader_args *data)
     serial_console_early_init(data->serial[CONFIG_SERIAL_CONSOLE_PORT]);
     serial_debug_early_init(data->serial[CONFIG_SERIAL_DEBUG_PORT]);
 
-    serial_console_putchar('A');
-    serial_console_putchar('\n');
-    serial_console_putchar('B');
-    serial_console_putchar('\n');
+    DBGG("After: Console init");
 
     /* print the boot banner */
     // MSG("###############################################################################\n");
@@ -52,25 +49,24 @@ void bootloader_init(struct bootloader_args *data)
 
     /* setup exception vectors */
     exceptions_setup_vectors();
+    DBGG("After: exceptions setup");
     
-    serial_console_putchar('C');
-    serial_console_putchar('\n');
 
     /* configure and enable MMU */
     mmu_configure_and_enable();
-    serial_console_putchar('D');
-    serial_console_putchar('\n');
+    DBGG("After: MMU Config and enable");
 
     /* enable caches */
-    cachectrl_enable_all_caches();
+    // cachectrl_enable_all_caches();
+    DBGG("DISABLED: cache enable");
 
-    serial_console_putchar('E');
-    serial_console_putchar('\n');
 
     // MSG("Skipping lower EL configuration.");
     // MSG("Reached end of initialization sequence...\n");
 
 
-    while (1)
-        ;
+    printf("Testing pritnf: %s\n", "--HAHAH");
+    DBGG("We are done");
+    while (1);
+        
 }

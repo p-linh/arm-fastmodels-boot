@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <armv8.h>
 #include <logging.h>
+#include <serial.h>
 
 ///< symbol of the exception vector start
 extern long __exn_vectors_start;
@@ -111,15 +112,15 @@ void exceptions_setup_vectors(void)
 
     if (armv8_get_current_el() == 3) {
         MSG("setting up exception vectors to 0x%" PRIx64 " (el3)\n",
-            (uint64_t)&__exn_vectors_start);
+             (uint64_t)&__exn_vectors_start);
         armv8_vbar_el3_write((uint64_t)&__exn_vectors_start);
     } else if (armv8_get_current_el() == 2) {
         MSG("setting up exception vectors to 0x%" PRIx64 " (el2)\n",
-            (uint64_t)&__exn_vectors_start);
+             (uint64_t)&__exn_vectors_start);
         armv8_vbar_el1_write((uint64_t)&__exn_vectors_start);
     } else if (armv8_get_current_el() == 1) {
         MSG("setting up exception vectors to 0x%" PRIx64 " (el1)\n",
-            (uint64_t)&__exn_vectors_start);
+             (uint64_t)&__exn_vectors_start);
         armv8_vbar_el1_write((uint64_t)&__exn_vectors_start);
     }
 }
