@@ -58,6 +58,9 @@ void bootloader_init(struct bootloader_args *data)
 
     enableFpuEL01();
 
+    /* setup exception vectors */
+    exceptions_setup_vectors();
+
     /* print the boot banner */
     MSG("###############################################################################\n");
     MSG("FastModels bootloader starting on %s %s core rev. r%u in EL%u\n",
@@ -65,8 +68,6 @@ void bootloader_init(struct bootloader_args *data)
         armv8_processor_revision_number, armv8_get_current_el());
     MSG("###############################################################################\n");
 
-    /* setup exception vectors */
-    exceptions_setup_vectors();
 
     /* configure and enable MMU */
     mmu_configure_and_enable();
